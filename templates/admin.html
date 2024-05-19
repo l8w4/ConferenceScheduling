@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="mr-2">{{ session['username'] }}</span>
+                        <img src="../static/images/user.png" alt="User Icon" width="30" height="30" class="rounded-circle" />
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <h2 style="text-align: center; text-decoration: underline; color: dodgerblue;">
+            Event Management - Admin Module
+        </h2>
+        <div class="row">
+            <div class="col-6">
+                <form action="/admin" method="POST" class="event">
+                    <div class="form-group">
+                        <label for="Title">Conference Title</label>
+                        <input type="text" class="form-control" id="Title" name="Title" placeholder="Enter the conference title" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Session">Session Number</label>
+                        <select class="form-control" id="Session" name="Session">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="day">Day</label>
+                        <input type="date" class="form-control" id="day" name="day" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Duration (Days)</label>
+                        <select class="form-control" id="duration" name="duration">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time Slot</label>
+                        <select class="form-control" id="time" name="time" required>
+                            <option value="" selected>Select the timeslot</option>
+                            {% for timeslot in timeslots %}
+                            <option value="{{ timeslot.id }}">{{ timeslot.slot }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="chairs">Capacity</label>
+                        <input type="number" class="form-control" id="chairs" name="chairs" min="1" max="100" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div class="col-6">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Event Date</th>
+                            <th>Starting Time</th>
+                            <th>Ending Time</th>
+                            <th>Room Number</th>
+                            <th>Event Total Slots</th>
+                            <th>Speaker Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td>{{ event.day }}</td>
+                            <td>{{ event.start_time }}</td>
+                            <td>{{ event.end_time }}</td>
+                            <td>{{ event.room_number }}</td>
+                            <td>{{ event.total_slots }}</td>
+                            <td>{{ event.speaker_name }}</td>
+                            <td>
+                                <button class="edit btn btn-sm btn-danger" data-event-id="{{ event.id }}">
+                                    Edit
+                                </button>
+                                <button class="delete btn btn-sm btn-success" data-event-id="{{ event.id }}">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="../static/js/jquery-3.7.1.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/sweetalert2@11.js"></script>
+    <script src="../static/js/custom.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("form").submit(function (event) {
+                event.preventDefault();
+                var startTime = $("#start_time").val();
+                var endTime = $("#end_time").val();
+                var startDate = new Date("2000-01-01T" + startTime + ":00");
+                var endDate = new Date("2000-01-01T" + endTime + ":00");
+                if (startDate >= endDate) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "The starting time of the event must precede the ending time.",
+                        allowOutsideClick: false,
+                    }).then(() => {
+                        $(this).trigger("reset");
+                    });
+                } else {
+                    $(this).unbind("submit").submit();
+                }
+            });
+            $(".edit").on("click", function () {
+                var eventId = $(this).data("event-id");
+                var hiddenInput = '<input type="hidden" id="edit_event_id" name="edit_event_id" value="' + eventId + '">';
+                $(".event").append(hiddenInput);
+                var row = $(this).closest("tr");
+                var date = row.find("td:eq(0)").text();
+                var startTime = row.find("td:eq(1)").text();
+                var endTime = row.find("td:eq(2)").text();
+                var roomNumber = row.find("td:eq(3)").text();
+                var chairs = row.find("td:eq(4)").text();
+                var speakerName = row.find("td:eq(5)").text();
+                $("#day").val(date);
+                $("#start_time").val(startTime);
+                $("#end_time").val(endTime);
+                $("#rooms").val(roomNumber);
+                $("#chairs").val(chairs);
+                $("#speaker option").filter(function () {
+                    return $(this).text() === speakerName;
+                }).prop("selected", true);
+            });
+            $(".delete").on("click", function () {
+                var eventId = $(this).data("event-id");
+                Swal.fire({
+                    icon: "info",
+                    allowOutsideClick: false,
+                    title: "Delete the event.",
+                    showCancelButton: true,
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        location.reload();
+                    } else {
+                        $.ajax({
+                            url: "/delete_event",
+                            method: "POST",
+                            data: { event_id: eventId },
+                            dataType: "json",
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "Event successfully deleted.",
+                                        allowOutsideClick: false,
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                    location.reload();
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: response.message,
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: "An error occurred while deleting the event.",
+                                });
+                            },
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        {% if status == 1 %}
+        Swal.fire({
+            icon: 'success',
+            title: 'Event creation successful',
+            showConfirmButton: true,
+            timer: 1500
+        });
+        {% set status = None %}
+        {% elif status %}
+        Swal.fire({
+            icon: 'error',
+            title: 'An error occurred!',
+            text: '{{ status }}'
+        });
+        {% endif %}
+    </script>
+</body>
+</html>

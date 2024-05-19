@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conference Attendee Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: #a8d0e6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"], textarea, select {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #004080;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #003060;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .word-count, .char-count {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Conference Attendee Form</h1>
+        <form id="attendeeForm" action="/attendee" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="event">Event Title:</label>
+                <select id="event" name="event" required>
+                    <option value="">Select Event</option>
+                    <!-- Options will be added dynamically from backend -->
+                    {% for event in events %}
+                    <option value="{{ event.id }}">{{ event.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="title">Title of Presentation:</label>
+                <input type="text" id="title" name="title" required>
+                <div class="char-count" id="charCount">0/40 characters</div>
+            </div>
+            <div class="form-group">
+                <label for="abstract">Abstract:</label>
+                <textarea id="abstract" name="abstract" rows="6" required></textarea>
+                <div class="word-count" id="wordCount">0/400 words</div>
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleInput = document.getElementById('title');
+            const abstractInput = document.getElementById('abstract');
+            titleInput.addEventListener('input', function() {
+                const title = this.value;
+                const charCount = title.length;
+                document.getElementById('charCount').textContent = ${charCount}/40 characters;
+                if (charCount >= 40) {
+                    this.value = title.substring(0, 40);
+                    document.getElementById('charCount').textContent = '40/40 characters';
+                }
+            });
+            abstractInput.addEventListener('input', function() {
+                const abstract = this.value;
+                const words = abstract.trim().split(/\s+/).filter(word => word.length > 0);
+                const wordCount = words.length;
+                document.getElementById('wordCount').textContent = ${wordCount}/400 words;
+                if (wordCount >= 400) {
+                    this.value = words.slice(0, 400).join(' ');
+                    document.getElementById('wordCount').textContent = '400/400 words';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

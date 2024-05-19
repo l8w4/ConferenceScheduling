@@ -1,0 +1,52 @@
+Ha$$an2004
+
+mysql -u root -p
+
+USE conference_scheduling;
+
+SHOW TABLES;
+
+SELECT * FROM users;
+
+DROP DATABASE IF EXISTS conference_scheduling;
+
+DROP DATABASE conference_scheduling;
+
+
+CREATE DATABASE conference_scheduling;
+CREATE USER please@localhost IDENTIFIED BY '12345678';
+
+GRANT ALL PRIVILEGES ON conference_scheduling.* TO please@localhost;
+
+FLUSH PRIVILEGES;
+
+CREATE DATABASE conference_scheduling;
+
+USE conference_scheduling;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    role INT NOT NULL
+);
+
+CREATE TABLE attendees (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    conf_title VARCHAR(100) NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    abstract TEXT NOT NULL
+);
+
+
+CREATE TABLE conferences(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    conf_title VARCHAR(100) NOT NULL,
+    session_number INT NOT NULL,
+    day DATE NOT NULL,
+    duration INT NOT NULL,
+    time_slot VARCHAR(100) NOT NULL,
+    capacity INT NOT NULL
+);
