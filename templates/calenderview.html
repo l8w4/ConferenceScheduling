@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,10 @@
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.css' rel='stylesheet' />
     <style>
         body {
-            background-color: #333;
+            background-color: #000000;
             color: #fff;
         }
+        
         .modal {
             display: none;
             position: fixed;
@@ -19,8 +21,9 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
         }
+        
         .modal-content {
             background-color: #222;
             color: #fff;
@@ -29,21 +32,42 @@
             border: 1px solid #888;
             width: 80%;
         }
+        
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
+        
         .close:hover,
         .close:focus {
             color: #fff;
             text-decoration: none;
             cursor: pointer;
         }
+        
         .fc-day-today {
             background-color: #add8e6 !important;
             color: #333 !important;
+        }
+        
+        .btn-dash {
+            background-color: #ff5733;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        .btn-dash:hover {
+            background-color: #c70039;
         }
     </style>
 </head>
@@ -51,11 +75,12 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="btn dash btn-sm btn-danger nav-link" href="/">Dashboard</a>
+                <a class="btn-dash nav-link" href="/">Dashboard</a>
             </li>
         </ul>
     </div>
 </nav>
+
 <body>
     <div id='calendar'></div>
     <div id="myModal" class="modal">
@@ -69,6 +94,33 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
+            var modal = document.getElementById("myModal");
+            var span = document.getElementsByClassName("close")[0];
+
+            function openModal(event) {
+                var modalContent = document.getElementById('modalContent');
+                var endDate = new Date(event.end);
+                endDate.setDate(endDate.getDate()); // Adjust end date to be inclusive
+
+                modalContent.innerHTML = `
+                    <h2>${event.title}</h2>
+                    <p><strong>Date:</strong> ${event.startStr} - ${endDate.toISOString().split('T')[0]}</p>
+                    <p><strong>Capacity:</strong> ${event.extendedProps.capacity}</p>
+                    <p><strong>Room:</strong> ${event.extendedProps.room}</p>
+                `;
+                modal.style.display = "block";
+            }
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
@@ -76,52 +128,15 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                events: [
-                    {
-                        title: 'Conference 1',
-                        start: '2024-05-01',
-                        end: '2024-05-03',
-                        attendees: 'Attendee 1, Attendee 2',
-                        topic: 'Conference Topic 1',
-                        capacity: 100,
-                        room: 'Room Name 1'
-                    },
-                    {
-                        title: 'Conference 2',
-                        start: '2024-05-10',
-                        end: '2024-05-12',
-                        attendees: 'Attendee 3, Attendee 4',
-                        topic: 'Conference Topic 2',
-                        capacity: 150,
-                        room: 'Room Name 2'
-                    }
-                ],
+                events: '/api/events',
                 eventClick: function(info) {
-                    var modalContent = document.getElementById('modalContent');
-                    modalContent.innerHTML = `
-                        <h2>${info.event.title}</h2>
-                        <p><strong>Date:</strong> ${info.event.start.toDateString()}</p>
-                        <p><strong>Time:</strong> ${info.event.extendedProps.startTime} - ${info.event.extendedProps.endTime}</p>
-                        <p><strong>Attendees:</strong> ${info.event.extendedProps.attendees}</p>
-                        <p><strong>Topic:</strong> ${info.event.extendedProps.topic}</p>
-                        <p><strong>Capacity:</strong> ${info.event.extendedProps.capacity}</p>
-                        <p><strong>Room:</strong> ${info.event.extendedProps.room}</p>
-                    `;
-                    modal.style.display = "block";
+                    openModal(info.event);
                 }
             });
+
             calendar.render();
-            var modal = document.getElementById("myModal");
-            var span = document.getElementsByClassName("close")[0];
-            span.onclick = function() {
-                modal.style.display = "none";
-            }
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
         });
     </script>
 </body>
+
 </html>

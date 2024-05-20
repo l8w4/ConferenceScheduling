@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Conference</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Edit Conference</h2>
+        <form action="/edit_conference/{{ conference[0] }}" method="POST" class="event">
+            <div class="form-group">
+                <label for="Title">Conference Title</label>
+                <input type="text" class="form-control" id="Title" name="Title" value="{{ conference[1] }}" required />
+            </div>
+            <div class="form-group">
+                <label for="Session">Session Number</label>
+                <select class="form-control" id="Session" name="Session">
+                    <option value="1" {% if conference[2] == 1 %}selected{% endif %}>1</option>
+                    <option value="2" {% if conference[2] == 2 %}selected{% endif %}>2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="day">Day</label>
+                <input type="date" class="form-control" id="day" name="day" value="{{ conference[3] }}" required />
+            </div>
+            <div class="form-group">
+                <label for="duration">Duration (Days)</label>
+                <select class="form-control" id="duration" name="duration">
+                    <option value="1" {% if conference[4] == 1 %}selected{% endif %}>1</option>
+                    <option value="2" {% if conference[4] == 2 %}selected{% endif %}>2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="chairs">Capacity</label>
+                <input type="number" class="form-control" id="chairs" name="chairs" min="1" max="100" value="{{ conference[5] }}" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <script src="../static/js/jquery-3.7.1.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/sweetalert2@11.js"></script>
+    <script src="../static/js/c2.js"></script>
+</body>
+
+</html>

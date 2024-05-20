@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +10,7 @@
         body {
             background-color: #f8f9fa;
         }
+        
         .login-container {
             max-width: 400px;
             margin: 0 auto;
@@ -18,15 +20,18 @@
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
+        
         .navbar {
             border-radius: 10px;
             background-color: #007bff !important;
         }
+        
         .dash {
             border-radius: 10px;
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -60,7 +65,7 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" id="password" placeholder="Password" name="password" required />
                     <label for="check">Show password</label>
-                    <input type="checkbox" id="check"/>
+                    <input type="checkbox" id="check" />
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Login</button>
             </form>
@@ -71,18 +76,25 @@
     <script src="../static/js/sweetalert2@11.js"></script>
     <script src="../static/js/custom.js"></script>
     <script>
-        $(document).ready(function(){
-            {% if status == 0 %}
+        $(document).ready(function() {
+            // Check if status is 0, then show error message
+            var status = {
+                {
+                    status
+                }
+            };
+            if (status === 0) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Login error, please check your password or role.',
                     allowOutsideClick: false,
                 }).then(() => {
                     $('.login').trigger('reset');
-                    window.location.href="/";
+                    window.location.href = "/";
                 });
-            {% endif %}
+            }
         });
     </script>
 </body>
+
 </html>

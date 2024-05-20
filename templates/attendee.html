@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +13,7 @@
             margin: 0;
             padding: 0;
         }
+        
         .container {
             max-width: 600px;
             margin: 50px auto;
@@ -21,19 +23,26 @@
             border-radius: 8px;
             border: 1px solid #ccc;
         }
+        
         h1 {
             text-align: center;
             color: #333;
         }
+        
         form {
             display: flex;
             flex-direction: column;
         }
+        
         label {
             margin-top: 10px;
             font-weight: bold;
         }
-        input[type="text"], input[type="email"], textarea, select {
+        
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
@@ -41,7 +50,9 @@
             width: 100%;
             box-sizing: border-box;
         }
-        input[type="submit"] {
+        
+        input[type="submit"],
+        .button {
             margin-top: 20px;
             padding: 10px;
             background-color: #004080;
@@ -50,21 +61,38 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
         }
-        input[type="submit"]:hover {
+        
+        input[type="submit"]:hover,
+        .button:hover {
             background-color: #003060;
         }
+        
         .form-group {
             margin-bottom: 15px;
         }
-        .word-count, .char-count {
+        
+        .word-count,
+        .char-count {
             font-size: 12px;
             color: #666;
         }
+        
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
+        <div class="button-container">
+            <a href="/" class="button">Logout</a>
+        </div>
         <h1>Conference Attendee Form</h1>
         <form id="attendeeForm" action="/attendee" method="POST">
             <div class="form-group">
@@ -79,15 +107,15 @@
                 <label for="event">Event Title:</label>
                 <select id="event" name="event" required>
                     <option value="">Select Event</option>
-                    <!-- Options will be added dynamically from backend -->
-                    {% for event in events %}
-                    <option value="{{ event.id }}">{{ event.title }}</option>
+                    <!-- Options added dynamically from backend -->
+                    {% for conference in conferences %}
+                    <option value="{{ conference[1] }}">{{ conference[1] }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="form-group">
-                <label for="title">Title of Presentation:</label>
-                <input type="text" id="title" name="title" required>
+                <label for="title_p">Title of Presentation:</label>
+                <input type="text" id="title_p" name="title_p" required>
                 <div class="char-count" id="charCount">0/40 characters</div>
             </div>
             <div class="form-group">
@@ -100,22 +128,24 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const titleInput = document.getElementById('title');
+            const titleInput = document.getElementById('title_p'); // Updated to 'title_p'
             const abstractInput = document.getElementById('abstract');
+
             titleInput.addEventListener('input', function() {
                 const title = this.value;
                 const charCount = title.length;
-                document.getElementById('charCount').textContent = ${charCount}/40 characters;
+                document.getElementById('charCount').textContent = `${charCount}/40 characters`;
                 if (charCount >= 40) {
                     this.value = title.substring(0, 40);
                     document.getElementById('charCount').textContent = '40/40 characters';
                 }
             });
+
             abstractInput.addEventListener('input', function() {
                 const abstract = this.value;
                 const words = abstract.trim().split(/\s+/).filter(word => word.length > 0);
                 const wordCount = words.length;
-                document.getElementById('wordCount').textContent = ${wordCount}/400 words;
+                document.getElementById('wordCount').textContent = `${wordCount}/400 words`;
                 if (wordCount >= 400) {
                     this.value = words.slice(0, 400).join(' ');
                     document.getElementById('wordCount').textContent = '400/400 words';
@@ -124,4 +154,5 @@
         });
     </script>
 </body>
+
 </html>
