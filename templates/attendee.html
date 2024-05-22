@@ -13,7 +13,7 @@
             margin: 0;
             padding: 0;
         }
-        
+
         .container {
             max-width: 600px;
             margin: 50px auto;
@@ -23,22 +23,22 @@
             border-radius: 8px;
             border: 1px solid #ccc;
         }
-        
+
         h1 {
             text-align: center;
             color: #333;
         }
-        
+
         form {
             display: flex;
             flex-direction: column;
         }
-        
+
         label {
             margin-top: 10px;
             font-weight: bold;
         }
-        
+
         input[type="text"],
         input[type="email"],
         textarea,
@@ -50,7 +50,7 @@
             width: 100%;
             box-sizing: border-box;
         }
-        
+
         input[type="submit"],
         .button {
             margin-top: 20px;
@@ -65,25 +65,37 @@
             text-decoration: none;
             display: inline-block;
         }
-        
+
         input[type="submit"]:hover,
         .button:hover {
             background-color: #003060;
         }
-        
+
         .form-group {
             margin-bottom: 15px;
         }
-        
+
         .word-count,
         .char-count {
             font-size: 12px;
             color: #666;
         }
-        
+
         .button-container {
             display: flex;
             justify-content: space-between;
+        }
+
+        /* Style for the dropdown menu */
+        .time-dropdown {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            margin-top: 5px;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -118,24 +130,39 @@
                 <input type="text" id="title_p" name="title_p" required>
                 <div class="char-count" id="charCount">0/40 characters</div>
             </div>
+            <!-- Dropdown menu for selecting preferred start time -->
+            <div class="form-group">
+                <label for="start_time">Preferred Start Time:</label>
+                <select id="start_time" name="start_time" class="time-dropdown">
+                    <option value="10:00">10:00 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="13:00">01:00 PM</option>
+                    <option value="14:00">02:00 PM</option>
+                    <option value="15:00">03:00 PM</option>
+                    <option value="16:00">04:00 PM</option>
+                    <option value="17:00">05:00 PM</option>
+                </select>
+            </div>
             <div class="form-group">
                 <label for="abstract">Abstract:</label>
                 <textarea id="abstract" name="abstract" rows="6" required></textarea>
-                <div class="word-count" id="wordCount">0/400 words</div>
+                <div class="word-count" id="wordCount">0/100 words</div>
             </div>
             <input type="submit" value="Submit">
         </form>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const titleInput = document.getElementById('title_p'); // Updated to 'title_p'
+            const titleInput = document.getElementById('title_p');
             const abstractInput = document.getElementById('abstract');
 
             titleInput.addEventListener('input', function() {
                 const title = this.value;
                 const charCount = title.length;
                 document.getElementById('charCount').textContent = `${charCount}/40 characters`;
-                if (charCount >= 40) {
+                if (charCount >= 
+                40) {
                     this.value = title.substring(0, 40);
                     document.getElementById('charCount').textContent = '40/40 characters';
                 }
@@ -145,10 +172,10 @@
                 const abstract = this.value;
                 const words = abstract.trim().split(/\s+/).filter(word => word.length > 0);
                 const wordCount = words.length;
-                document.getElementById('wordCount').textContent = `${wordCount}/400 words`;
-                if (wordCount >= 400) {
-                    this.value = words.slice(0, 400).join(' ');
-                    document.getElementById('wordCount').textContent = '400/400 words';
+                document.getElementById('wordCount').textContent = `${wordCount}/100 words`;
+                if (wordCount >= 100) {
+                    this.value = words.slice(0, 100).join(' ');
+                    document.getElementById('wordCount').textContent = '100/100 words';
                 }
             });
         });

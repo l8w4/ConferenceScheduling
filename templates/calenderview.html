@@ -71,17 +71,18 @@
         }
     </style>
 </head>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="btn-dash nav-link" href="/">Dashboard</a>
-            </li>
-        </ul>
-    </div>
-</nav>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="btn-dash nav-link" href="/">Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div id='calendar'></div>
     <div id="myModal" class="modal">
         <div class="modal-content">
@@ -89,6 +90,7 @@
             <div id="modalContent"></div>
         </div>
     </div>
+
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.js'></script>
     <script>
@@ -97,30 +99,51 @@
             var modal = document.getElementById("myModal");
             var span = document.getElementsByClassName("close")[0];
 
+            // Function to open modal
             function openModal(event) {
+                console.log('Event data:', event);  // Debugging line to check event data
                 var modalContent = document.getElementById('modalContent');
                 var endDate = new Date(event.end);
-                endDate.setDate(endDate.getDate()); // Adjust end date to be inclusive
+                endDate.setDate(endDate.getDate() - 1); // Adjust end date to be inclusive
+
+                var speakersHTML = '';
+                event.extendedProps.speakers.forEach(speaker => {
+                    // Construct HTML for speaker with start_time and end_time
+                    speakersHTML += `
+                        <li>
+                            ${speaker.name} (Start Time: ${speaker.start_time}, End Time: ${speaker.end_time})
+                        </li>
+                    `;
+                });
 
                 modalContent.innerHTML = `
                     <h2>${event.title}</h2>
-                    <p><strong>Date:</strong> ${event.startStr} - ${endDate.toISOString().split('T')[0]}</p>
+                    <p><strong>Date:</strong> ${event.startStr} - ${event.end.toISOString().split('T')[0]}</p>
                     <p><strong>Capacity:</strong> ${event.extendedProps.capacity}</p>
-                    <p><strong>Room:</strong> ${event.extendedProps.room}</p>
+                    <p><strong>Number of Sessions:</strong> ${event.extendedProps.session_number}</p>
+                    <div>
+                        <h3>Speakers</h3>
+                        <ul>
+                            ${speakersHTML}
+                        </ul>
+                    </div>
                 `;
                 modal.style.display = "block";
             }
 
+            // Event listener for close button
             span.onclick = function() {
                 modal.style.display = "none";
             }
 
+            // Event listener for clicking outside the modal
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = "none";
                 }
             }
 
+            // Initializing the calendar
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
@@ -128,10 +151,15 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                events: '/api/events',
+                events: '/api/events', // The endpoint to fetch events
                 eventClick: function(info) {
                     openModal(info.event);
                 }
+            });
+
+            // Debugging: Add logging for received events
+            calendar.on('eventReceive', function(info) {
+                console.log('Received event:', info.event);
             });
 
             calendar.render();
