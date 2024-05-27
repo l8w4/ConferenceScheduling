@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conference Attendee Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: #a8d0e6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"],
+        .button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #004080;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        input[type="submit"]:hover,
+        .button:hover {
+            background-color: #003060;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .word-count,
+        .char-count {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Style for the dropdown menu */
+        .time-dropdown {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="button-container">
+            <a href="/" class="button">Logout</a>
+        </div>
+        <h1>Conference Attendee Form</h1>
+        <form id="attendeeForm" action="/attendee" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="event">Event Title:</label>
+                <select id="event" name="event" required>
+                    <option value="">Select Event</option>
+                    <!-- Options added dynamically from backend -->
+                    {% for conference in conferences %}
+                    <option value="{{ conference[1] }}">{{ conference[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="title_p">Title of Presentation:</label>
+                <input type="text" id="title_p" name="title_p" required>
+                <div class="char-count" id="charCount">0/40 characters</div>
+            </div>
+            <!-- Dropdown menu for selecting preferred start time -->
+            <div class="form-group">
+                <label for="start_time">Preferred Start Time:</label>
+                <select id="start_time" name="start_time" class="time-dropdown">
+                    <option value="10:00">10:00 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="13:00">01:00 PM</option>
+                    <option value="14:00">02:00 PM</option>
+                    <option value="15:00">03:00 PM</option>
+                    <option value="16:00">04:00 PM</option>
+                    <option value="17:00">05:00 PM</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="abstract">Abstract:</label>
+                <textarea id="abstract" name="abstract" rows="6" required></textarea>
+                <div class="word-count" id="wordCount">0/100 words</div>
+            </div>
+            <!-- Error message section -->
+            {% if error_message %}
+            <div class="form-group" style="color: red;">
+                {{ error_message }}
+            </div>
+            {% endif %}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleInput = document.getElementById('title_p');
+            const abstractInput = document.getElementById('abstract');
+
+            titleInput.addEventListener('input', function() {
+                const title = this.value;
+                const charCount = title.length;
+                document.getElementById('charCount').textContent = `${charCount}/40 characters`;
+                if (charCount >= 
+                40) {
+                    this.value = title.substring(0, 40);
+                    document.getElementById('charCount').textContent = '40/40 characters';
+                }
+            });
+
+            abstractInput.addEventListener('input', function() {
+                const abstract = this.value;
+                const words = abstract.trim().split(/\s+/).filter(word => word.length > 0);
+                const wordCount = words.length;
+                document.getElementById('wordCount').textContent = `${wordCount}/100 words`;
+                if (wordCount >= 100) {
+                    this.value = words.slice(0, 100).join(' ');
+                    document.getElementById('wordCount').textContent = '100/100 words';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="mr-2">{{ session['username'] }}</span>
+                        <img src="../static/images/user.png" alt="User Icon" width="30" height="30" class="rounded-circle" />
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <h2 style="text-align: center; text-decoration: underline; color: dodgerblue;">
+            Event Management - Admin Module
+        </h2>
+        <div class="row">
+            <div class="col-6">
+                <form action="/admin" method="POST" class="event">
+                    <div class="form-group">
+                        <label for="Title">Conference Title</label>
+                        <input type="text" class="form-control" id="Title" name="Title" placeholder="Enter the conference title" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Session">Session Number</label>
+                        <select class="form-control" id="Session" name="Session">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="day">Day</label>
+                        <input type="date" class="form-control" id="day" name="day" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Duration (Days)</label>
+                        <select class="form-control" id="duration" name="duration">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="chairs">Capacity</label>
+                        <input type="number" class="form-control" id="chairs" name="chairs" min="1" max="100" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div class="col-6">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Event Date</th>
+                            <th>Duration</th>
+                            <th>Room Number</th>
+                            <th>Event Total Slots</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for conference in conferences %}
+                        <tr>
+                            <td>{{ conference[1] }}</td>
+                            <td>{{ conference[3] }}</td>
+                            <td>{{ conference[4] }}</td>
+                            <td>{{ conference[2] }}</td>
+                            <td>{{ conference[5] }}</td>
+                            <td>
+                                <button class="edit btn btn-sm btn-danger" data-conference-id="{{ conference[0] }}">
+                                    Edit
+                                </button>
+                                <button class="delete btn btn-sm btn-success" data-conference-id="{{ conference[0] }}">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="../static/js/jquery-3.7.1.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/sweetalert2@11.js"></script>
+    <script src="../static/js/custom.js"></script>
+    <script src="../static/js/c2.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+.bg-image {
+    background-image: url('/static/images/conference.jpg');
+    background-size: cover; 
+    background-position: center; 
+    height: calc(100vh - 56px); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white; 
+    -webkit-filter: grayscale(100%);
+	filter: grayscale(100%);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+    
+}
+.bg-image:hover{
+    /* opacity: 0.5; */
+    -webkit-filter: grayscale(0);
+	filter: grayscale(0);
+}
+
+.text-heading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    font-weight: bold;
+    color: #093145;
+    text-align: center;
+    transition: opacity 0.5s ease;
+    /* font-family: 'Niconne', cursive; */
+    font-size: 100px;
+}
+
+.bg-image:hover .text-heading {
+    opacity: 1.0;
+}
